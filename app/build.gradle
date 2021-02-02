@@ -41,16 +41,24 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    testImplementation 'junit:junit:4.+'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
 
+    //Moxy
     implementation "com.github.moxy-community:moxy:2.1.2"
     kapt "com.github.moxy-community:moxy-compiler:2.1.2"
     implementation "com.github.moxy-community:moxy-ktx:2.1.2"
     implementation "com.github.moxy-community:moxy-androidx:2.1.2"
 
+    //Cicerone
     implementation 'ru.terrakok.cicerone:cicerone:5.1.1'
+
+    //RxJava2
+    implementation 'io.reactivex.rxjava3:rxjava:3.0.3'
+    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
+
+    //Test
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 }

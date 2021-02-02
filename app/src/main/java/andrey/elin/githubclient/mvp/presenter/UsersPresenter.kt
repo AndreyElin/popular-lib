@@ -11,7 +11,8 @@ import android.content.ContentValues.TAG
 import android.util.Log
 import ru.terrakok.cicerone.Router
 
-class UsersPresenter(val usersRepo: GithubUsersRepo, val router: Router) : MvpPresenter<UsersView>() {
+class UsersPresenter(val usersRepo: GithubUsersRepo, val router: Router) :
+    MvpPresenter<UsersView>() {
 
     class UsersListPresenter : IUserListPresenter {
         val users = mutableListOf<GithubUser>()
@@ -34,16 +35,21 @@ class UsersPresenter(val usersRepo: GithubUsersRepo, val router: Router) : MvpPr
         loadData()
 
         usersListPresenter.itemClickListener = { itemView ->
-            // TODO:
             val login = usersListPresenter.users[itemView.pos].login
             router.navigateTo(Screens.UserScreen(login))
         }
     }
 
     private fun loadData() {
-        val users = usersRepo.getUsers()
-        usersListPresenter.users.addAll(users)
-        viewState.updateList()
+        usersRepo.getUsers()
+            .subscribe(
+                { user -> usersListPresenter.users.add(user) },
+                { error -> Log.d(TAG, "UsersPresenter onError ${error.message}") },
+                {
+                    Log.d(TAG, "UsersPresenter onCompleted  ")
+                    viewState.updateList()
+                }
+            )
     }
 
     fun backPressed(): Boolean {
