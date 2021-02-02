@@ -26,7 +26,7 @@ class UsersFragment : MvpAppCompatFragment(), UsersView, BackButtonListener {
     var adapter: UsersRVAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =
-        View.inflate(context, R.layout.fragment_users, null)
+            View.inflate(context, R.layout.fragment_users, null)
 
     override fun init() {
         rv_users.layoutManager = LinearLayoutManager(context)

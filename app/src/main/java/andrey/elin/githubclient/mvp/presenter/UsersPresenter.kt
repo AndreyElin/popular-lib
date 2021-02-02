@@ -6,6 +6,9 @@ import andrey.elin.githubclient.mvp.model.entity.GithubUsersRepo
 import andrey.elin.githubclient.mvp.presenter.list.IUserListPresenter
 import andrey.elin.githubclient.mvp.view.UsersView
 import andrey.elin.githubclient.mvp.view.list.UserItemView
+import andrey.elin.githubclient.navigation.Screens
+import android.content.ContentValues.TAG
+import android.util.Log
 import ru.terrakok.cicerone.Router
 
 class UsersPresenter(val usersRepo: GithubUsersRepo, val router: Router) : MvpPresenter<UsersView>() {
@@ -30,13 +33,15 @@ class UsersPresenter(val usersRepo: GithubUsersRepo, val router: Router) : MvpPr
         viewState.init()
         loadData()
 
-        usersListPresenter.itemClickListener = {itemView ->
+        usersListPresenter.itemClickListener = { itemView ->
             // TODO:
+            val login = usersListPresenter.users[itemView.pos].login
+            router.navigateTo(Screens.UserScreen(login))
         }
     }
 
     private fun loadData() {
-        val users =  usersRepo.getUsers()
+        val users = usersRepo.getUsers()
         usersListPresenter.users.addAll(users)
         viewState.updateList()
     }
