@@ -1,5 +1,6 @@
 package andrey.elin.githubclient.ui.fragments
 
+import andrey.elin.githubclient.ApiHolder
 import andrey.elin.githubclient.App
 import andrey.elin.githubclient.R
 import android.os.Bundle
@@ -11,26 +12,38 @@ import kotlinx.android.synthetic.main.fragment_users.*
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
 import andrey.elin.githubclient.mvp.model.entity.GithubUsersRepo
+import andrey.elin.githubclient.mvp.model.repo.retrofit.RetrofitGithubUsersRepo
 import andrey.elin.githubclient.mvp.presenter.UsersPresenter
 import andrey.elin.githubclient.mvp.view.UsersView
 import andrey.elin.githubclient.ui.BackButtonListener
 import andrey.elin.githubclient.ui.adapter.UsersRVAdapter
+import andrey.elin.githubclient.ui.image.GlideImageLoader
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 
 class UsersFragment : MvpAppCompatFragment(), UsersView, BackButtonListener {
     companion object {
         fun newInstance() = UsersFragment()
     }
 
-    val presenter: UsersPresenter by moxyPresenter { UsersPresenter(GithubUsersRepo(), App.instance.router) }
+    val presenter: UsersPresenter by moxyPresenter {
+        UsersPresenter(
+            AndroidSchedulers.mainThread(),
+            RetrofitGithubUsersRepo(ApiHolder().api), App.instance.router
+        )
+    }
 
     var adapter: UsersRVAdapter? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =
-            View.inflate(context, R.layout.fragment_users, null)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ) =
+        View.inflate(context, R.layout.fragment_users, null)
 
     override fun init() {
         rv_users.layoutManager = LinearLayoutManager(context)
-        adapter = UsersRVAdapter(presenter.usersListPresenter)
+        adapter = UsersRVAdapter(presenter.usersListPresenter, GlideImageLoader())
         rv_users.adapter = adapter
     }
 

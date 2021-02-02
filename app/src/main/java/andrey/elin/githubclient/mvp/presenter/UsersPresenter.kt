@@ -1,17 +1,20 @@
 package andrey.elin.githubclient.mvp.presenter
 
-import moxy.MvpPresenter
 import andrey.elin.githubclient.mvp.model.entity.GithubUser
-import andrey.elin.githubclient.mvp.model.entity.GithubUsersRepo
+import andrey.elin.githubclient.mvp.model.repo.IGithubUsersRepo
 import andrey.elin.githubclient.mvp.presenter.list.IUserListPresenter
 import andrey.elin.githubclient.mvp.view.UsersView
 import andrey.elin.githubclient.mvp.view.list.UserItemView
 import andrey.elin.githubclient.navigation.Screens
-import android.content.ContentValues.TAG
-import android.util.Log
+import io.reactivex.rxjava3.core.Scheduler
+import moxy.MvpPresenter
 import ru.terrakok.cicerone.Router
 
-class UsersPresenter(val usersRepo: GithubUsersRepo, val router: Router) :
+class UsersPresenter(
+    val mainThreadScheduler: Scheduler,
+    val usersRepo: IGithubUsersRepo,
+    val router: Router
+) :
     MvpPresenter<UsersView>() {
 
     class UsersListPresenter : IUserListPresenter {
@@ -23,7 +26,8 @@ class UsersPresenter(val usersRepo: GithubUsersRepo, val router: Router) :
 
         override fun bindView(view: UserItemView) {
             val user = users[view.pos]
-            view.setLogin(user.login)
+            user.login?.let { view.setLogin(it) }
+            user.avatarUrl?.let {view.loadAvatar(it)}
         }
     }
 
@@ -42,14 +46,14 @@ class UsersPresenter(val usersRepo: GithubUsersRepo, val router: Router) :
 
     private fun loadData() {
         usersRepo.getUsers()
-            .subscribe(
-                { user -> usersListPresenter.users.add(user) },
-                { error -> Log.d(TAG, "UsersPresenter onError ${error.message}") },
-                {
-                    Log.d(TAG, "UsersPresenter onCompleted  ")
-                    viewState.updateList()
-                }
-            )
+            .observeOn(mainThreadScheduler)
+            .subscribe({ users ->
+                usersListPresenter.users.clear()
+                usersListPresenter.users.addAll(users)
+                viewState.updateList()
+            }, {
+                println("Error: ${it.message}")
+            })
     }
 
     fun backPressed(): Boolean {
