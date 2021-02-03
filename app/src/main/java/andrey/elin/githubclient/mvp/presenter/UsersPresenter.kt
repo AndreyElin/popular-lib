@@ -39,8 +39,8 @@ class UsersPresenter(
         loadData()
 
         usersListPresenter.itemClickListener = { itemView ->
-            val login = usersListPresenter.users[itemView.pos].login
-            router.navigateTo(Screens.UserScreen(login))
+            val user = usersListPresenter.users[itemView.pos]
+            router.navigateTo(Screens.UserScreen(user))
         }
     }
 
