@@ -1,14 +1,14 @@
 package andrey.elin.githubclient
 
-import andrey.elin.githubclient.mvp.model.entity.room.Database
+import andrey.elin.githubclient.di.AppComponent
+import andrey.elin.githubclient.di.DaggerAppComponent
+import andrey.elin.githubclient.di.modules.AppModule
 import android.app.Application
-import ru.terrakok.cicerone.Cicerone
-import ru.terrakok.cicerone.Router
 
 class App : Application() {
-    private val cicerone: Cicerone<Router> by lazy {
-        Cicerone.create()
-    }
+
+    lateinit var appComponent: AppComponent
+
 
     companion object {
         lateinit var instance: App
@@ -18,13 +18,9 @@ class App : Application() {
         super.onCreate()
         instance = this
 
-        Database.create(this)
+        appComponent = DaggerAppComponent.builder()
+            .appModule(AppModule(this))
+            .build()
     }
-
-    val navigatorHolder
-        get() = cicerone.navigatorHolder
-
-    val router
-        get() = cicerone.router
 
 }

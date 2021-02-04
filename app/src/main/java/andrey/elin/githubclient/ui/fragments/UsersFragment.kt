@@ -21,15 +21,24 @@ import andrey.elin.githubclient.ui.adapter.UsersRVAdapter
 import andrey.elin.githubclient.ui.image.GlideImageLoader
 import andrey.elin.githubclient.ui.network.AndroidNetworkStatus
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import javax.inject.Inject
 
 class UsersFragment : MvpAppCompatFragment(), UsersView, BackButtonListener {
+
+    @Inject
+    lateinit var database: Database
+
     companion object {
-        fun newInstance() = UsersFragment()
+        fun newInstance() = UsersFragment().apply {
+            App.instance.appComponent.inject(this)
+        }
     }
 
-    val presenter: UsersPresenter by moxyPresenter { UsersPresenter(AndroidSchedulers.mainThread(),
-        RetrofitGithubUsersRepo(ApiHolder().api, AndroidNetworkStatus(App.instance), RoomGithubUsersCache(Database.getInstance())),
-        App.instance.router) }
+    val presenter: UsersPresenter by moxyPresenter {
+        UsersPresenter(AndroidSchedulers.mainThread()).apply {
+            App.instance.appComponent.inject(this)
+        }
+    }
 
     var adapter: UsersRVAdapter? = null
 
