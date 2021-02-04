@@ -3,6 +3,7 @@ package andrey.elin.githubclient.ui.fragments
 import andrey.elin.githubclient.ApiHolder
 import andrey.elin.githubclient.App
 import andrey.elin.githubclient.R
+import andrey.elin.githubclient.mvp.model.cache.room.RoomGithubRepositoriesCache
 import andrey.elin.githubclient.mvp.model.entity.GithubUser
 import andrey.elin.githubclient.mvp.model.entity.room.Database
 import andrey.elin.githubclient.mvp.model.repo.retrofit.RetrofitGithubRepositoriesRepo
@@ -38,7 +39,7 @@ class UserFragment : MvpAppCompatFragment(), UserView, BackButtonListener {
         val user = arguments?.getParcelable<GithubUser>(USER_ARG) as GithubUser
 
         UserPresenter(user, AndroidSchedulers.mainThread(),
-            RetrofitGithubRepositoriesRepo(ApiHolder().api, AndroidNetworkStatus(App.instance), Database.getInstance()),
+            RetrofitGithubRepositoriesRepo(ApiHolder().api, AndroidNetworkStatus(App.instance), RoomGithubRepositoriesCache(Database.getInstance())),
             App.instance.router
         )
     }

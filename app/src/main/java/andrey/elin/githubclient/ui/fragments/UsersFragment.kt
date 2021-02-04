@@ -3,6 +3,7 @@ package andrey.elin.githubclient.ui.fragments
 import andrey.elin.githubclient.ApiHolder
 import andrey.elin.githubclient.App
 import andrey.elin.githubclient.R
+import andrey.elin.githubclient.mvp.model.cache.room.RoomGithubUsersCache
 import andrey.elin.githubclient.mvp.model.entity.room.Database
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -27,7 +28,7 @@ class UsersFragment : MvpAppCompatFragment(), UsersView, BackButtonListener {
     }
 
     val presenter: UsersPresenter by moxyPresenter { UsersPresenter(AndroidSchedulers.mainThread(),
-        RetrofitGithubUsersRepo(ApiHolder().api, AndroidNetworkStatus(App.instance), Database.getInstance()),
+        RetrofitGithubUsersRepo(ApiHolder().api, AndroidNetworkStatus(App.instance), RoomGithubUsersCache(Database.getInstance())),
         App.instance.router) }
 
     var adapter: UsersRVAdapter? = null
