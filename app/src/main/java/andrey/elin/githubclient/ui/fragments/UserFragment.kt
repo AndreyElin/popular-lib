@@ -1,35 +1,23 @@
 package andrey.elin.githubclient.ui.fragments
 
-import andrey.elin.githubclient.ApiHolder
 import andrey.elin.githubclient.App
 import andrey.elin.githubclient.R
-import andrey.elin.githubclient.mvp.model.cache.room.RoomGithubRepositoriesCache
 import andrey.elin.githubclient.mvp.model.entity.GithubUser
-import andrey.elin.githubclient.mvp.model.entity.room.Database
-import andrey.elin.githubclient.mvp.model.repo.retrofit.RetrofitGithubRepositoriesRepo
 import andrey.elin.githubclient.mvp.presenter.UserPresenter
 import andrey.elin.githubclient.mvp.view.UserView
 import andrey.elin.githubclient.ui.BackButtonListener
 import andrey.elin.githubclient.ui.adapter.ReposotoriesRVAdapter
-import andrey.elin.githubclient.ui.network.AndroidNetworkStatus
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.fragment_user.*
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
-import ru.terrakok.cicerone.Router
-import javax.inject.Inject
 
 class UserFragment : MvpAppCompatFragment(), UserView, BackButtonListener {
 
-    @Inject
-    lateinit var router: Router
-    @Inject
-    lateinit var database: Database
 
     companion object {
         private const val USER_ARG = "user"
@@ -38,7 +26,6 @@ class UserFragment : MvpAppCompatFragment(), UserView, BackButtonListener {
             arguments = Bundle().apply {
                 putParcelable(USER_ARG, user)
             }
-            App.instance.appComponent.inject(this)
         }
     }
 
@@ -47,10 +34,9 @@ class UserFragment : MvpAppCompatFragment(), UserView, BackButtonListener {
     val presenter: UserPresenter by moxyPresenter {
         val user = arguments?.getParcelable<GithubUser>(USER_ARG) as GithubUser
 
-        UserPresenter(user, AndroidSchedulers.mainThread(),
-            RetrofitGithubRepositoriesRepo(ApiHolder().api, AndroidNetworkStatus(App.instance), RoomGithubRepositoriesCache(database)),
-            router
-        )
+        UserPresenter(user).apply {
+            App.instance.appComponent.inject(this)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =

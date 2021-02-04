@@ -2,6 +2,7 @@ package andrey.elin.githubclient.di
 
 import andrey.elin.githubclient.di.modules.*
 import andrey.elin.githubclient.mvp.presenter.MainPresenter
+import andrey.elin.githubclient.mvp.presenter.UserPresenter
 import andrey.elin.githubclient.mvp.presenter.UsersPresenter
 import andrey.elin.githubclient.ui.MainActivity
 import andrey.elin.githubclient.ui.fragments.RepositoryFragment
@@ -24,6 +25,7 @@ interface AppComponent {
     fun inject(mainActivity: MainActivity)
     fun inject(mainPresenter: MainPresenter)
     fun inject(usersPresenter: UsersPresenter)
+    fun inject(userPresenter: UserPresenter)
 
     // ДЗ - избавиться от зависимостей ниже
     fun inject(usersFragment: UsersFragment)

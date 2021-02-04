@@ -1,37 +1,27 @@
 package andrey.elin.githubclient.ui.fragments
 
-import andrey.elin.githubclient.ApiHolder
 import andrey.elin.githubclient.App
 import andrey.elin.githubclient.R
-import andrey.elin.githubclient.mvp.model.cache.room.RoomGithubUsersCache
-import andrey.elin.githubclient.mvp.model.entity.room.Database
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_users.*
-import moxy.MvpAppCompatFragment
-import moxy.ktx.moxyPresenter
-import andrey.elin.githubclient.mvp.model.repo.retrofit.RetrofitGithubUsersRepo
 import andrey.elin.githubclient.mvp.presenter.UsersPresenter
 import andrey.elin.githubclient.mvp.view.UsersView
 import andrey.elin.githubclient.ui.BackButtonListener
 import andrey.elin.githubclient.ui.adapter.UsersRVAdapter
 import andrey.elin.githubclient.ui.image.GlideImageLoader
-import andrey.elin.githubclient.ui.network.AndroidNetworkStatus
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import javax.inject.Inject
+import kotlinx.android.synthetic.main.fragment_users.*
+import moxy.MvpAppCompatFragment
+import moxy.ktx.moxyPresenter
 
 class UsersFragment : MvpAppCompatFragment(), UsersView, BackButtonListener {
 
-    @Inject
-    lateinit var database: Database
 
     companion object {
-        fun newInstance() = UsersFragment().apply {
-            App.instance.appComponent.inject(this)
-        }
+        fun newInstance() = UsersFragment()
     }
 
     val presenter: UsersPresenter by moxyPresenter {
