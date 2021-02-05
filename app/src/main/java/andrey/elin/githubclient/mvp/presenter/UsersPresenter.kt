@@ -1,14 +1,25 @@
 package andrey.elin.githubclient.mvp.presenter
 
-import moxy.MvpPresenter
 import andrey.elin.githubclient.mvp.model.entity.GithubUser
-import andrey.elin.githubclient.mvp.model.entity.GithubUsersRepo
+import andrey.elin.githubclient.mvp.model.repo.IGithubUsersRepo
 import andrey.elin.githubclient.mvp.presenter.list.IUserListPresenter
 import andrey.elin.githubclient.mvp.view.UsersView
 import andrey.elin.githubclient.mvp.view.list.UserItemView
+import andrey.elin.githubclient.navigation.Screens
+import io.reactivex.rxjava3.core.Scheduler
+import moxy.MvpPresenter
 import ru.terrakok.cicerone.Router
+import javax.inject.Inject
 
-class UsersPresenter(val usersRepo: GithubUsersRepo, val router: Router) : MvpPresenter<UsersView>() {
+class UsersPresenter(
+    val mainThreadScheduler: Scheduler
+) :
+    MvpPresenter<UsersView>() {
+
+    @Inject
+    lateinit var usersRepo: IGithubUsersRepo
+    @Inject
+    lateinit var router: Router
 
     class UsersListPresenter : IUserListPresenter {
         val users = mutableListOf<GithubUser>()
@@ -19,7 +30,8 @@ class UsersPresenter(val usersRepo: GithubUsersRepo, val router: Router) : MvpPr
 
         override fun bindView(view: UserItemView) {
             val user = users[view.pos]
-            view.setLogin(user.login)
+            user.login?.let { view.setLogin(it) }
+            user.avatarUrl?.let { view.loadAvatar(it) }
         }
     }
 
@@ -30,19 +42,31 @@ class UsersPresenter(val usersRepo: GithubUsersRepo, val router: Router) : MvpPr
         viewState.init()
         loadData()
 
-        usersListPresenter.itemClickListener = {itemView ->
-            // TODO:
+        usersListPresenter.itemClickListener = { itemView ->
+            val user = usersListPresenter.users[itemView.pos]
+            router.navigateTo(Screens.UserScreen(user))
         }
     }
 
     private fun loadData() {
-        val users =  usersRepo.getUsers()
-        usersListPresenter.users.addAll(users)
-        viewState.updateList()
+        usersRepo.getUsers()
+            .observeOn(mainThreadScheduler)
+            .subscribe({ users ->
+                usersListPresenter.users.clear()
+                usersListPresenter.users.addAll(users)
+                viewState.updateList()
+            }, {
+                println("Error: ${it.message}")
+            })
     }
 
     fun backPressed(): Boolean {
         router.exit()
         return true
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewState.release()
     }
 }

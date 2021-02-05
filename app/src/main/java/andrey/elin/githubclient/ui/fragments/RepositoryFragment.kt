@@ -1,0 +1,70 @@
+package andrey.elin.githubclient.ui.fragments
+
+import andrey.elin.githubclient.App
+import andrey.elin.githubclient.R
+import andrey.elin.githubclient.mvp.model.entity.GithubRepository
+import andrey.elin.githubclient.mvp.presenter.RepositoryPresenter
+import andrey.elin.githubclient.mvp.view.RepositoryView
+import andrey.elin.githubclient.ui.BackButtonListener
+import andrey.elin.githubclient.ui.adapter.ReposotoriesRVAdapter
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import kotlinx.android.synthetic.main.fragment_repository.*
+import moxy.MvpAppCompatFragment
+import moxy.ktx.moxyPresenter
+
+class RepositoryFragment : MvpAppCompatFragment(), RepositoryView, BackButtonListener {
+
+    companion object {
+        private const val REPOSITORY_ARG = "repository"
+
+        fun newInstance(repository: GithubRepository) = RepositoryFragment().apply {
+            arguments = Bundle().apply {
+                putParcelable(REPOSITORY_ARG, repository)
+            }
+        }
+    }
+
+    var adapter: ReposotoriesRVAdapter? = null
+
+    val presenter: RepositoryPresenter by moxyPresenter {
+        val repository =
+            arguments?.getParcelable<GithubRepository>(REPOSITORY_ARG) as GithubRepository
+
+        RepositoryPresenter(repository).apply {
+            App.instance.repositorySubComponent?.inject(this)
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ) =
+        View.inflate(context, R.layout.fragment_repository, null)
+
+    override fun init() {}
+
+    override fun setId(text: String) {
+        tv_id.text = text
+    }
+
+    override fun setTitle(text: String) {
+        tv_title.text = text
+    }
+
+    override fun setForksCount(text: String) {
+        tv_forksCount.text = text
+    }
+
+    override fun backPressed() = presenter.backPressed()
+
+    override fun onDestroy() {
+        super.onDestroy()
+        System.out.println("onDestroy")
+    }
+
+
+}
