@@ -5,7 +5,6 @@ import andrey.elin.githubclient.mvp.model.entity.GithubUser
 import andrey.elin.githubclient.ui.fragments.RepositoryFragment
 import andrey.elin.githubclient.ui.fragments.UserFragment
 import andrey.elin.githubclient.ui.fragments.UsersFragment
-import androidx.fragment.app.Fragment
 import ru.terrakok.cicerone.android.support.SupportAppScreen
 
 class Screens {

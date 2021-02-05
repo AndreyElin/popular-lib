@@ -1,5 +1,6 @@
 package andrey.elin.githubclient.ui.fragments
 
+import andrey.elin.githubclient.App
 import andrey.elin.githubclient.R
 import andrey.elin.githubclient.mvp.model.entity.GithubRepository
 import andrey.elin.githubclient.mvp.presenter.RepositoryPresenter
@@ -16,7 +17,6 @@ import moxy.ktx.moxyPresenter
 
 class RepositoryFragment : MvpAppCompatFragment(), RepositoryView, BackButtonListener {
 
-
     companion object {
         private const val REPOSITORY_ARG = "repository"
 
@@ -24,19 +24,25 @@ class RepositoryFragment : MvpAppCompatFragment(), RepositoryView, BackButtonLis
             arguments = Bundle().apply {
                 putParcelable(REPOSITORY_ARG, repository)
             }
-
         }
     }
 
     var adapter: ReposotoriesRVAdapter? = null
 
     val presenter: RepositoryPresenter by moxyPresenter {
-        val repository = arguments?.getParcelable<GithubRepository>(REPOSITORY_ARG) as GithubRepository
+        val repository =
+            arguments?.getParcelable<GithubRepository>(REPOSITORY_ARG) as GithubRepository
 
-        RepositoryPresenter(repository)
+        RepositoryPresenter(repository).apply {
+            App.instance.repositorySubComponent?.inject(this)
+        }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ) =
         View.inflate(context, R.layout.fragment_repository, null)
 
     override fun init() {}

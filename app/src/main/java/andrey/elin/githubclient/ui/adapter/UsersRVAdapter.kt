@@ -11,8 +11,12 @@ import kotlinx.android.synthetic.main.item_user.view.*
 import andrey.elin.githubclient.mvp.presenter.list.IUserListPresenter
 import andrey.elin.githubclient.mvp.view.list.UserItemView
 import android.widget.ImageView
+import javax.inject.Inject
 
-class UsersRVAdapter(val presenter : IUserListPresenter, val imageLoader : IImageLoader<ImageView>) : RecyclerView.Adapter<UsersRVAdapter.ViewHolder>() {
+class UsersRVAdapter(val presenter : IUserListPresenter) : RecyclerView.Adapter<UsersRVAdapter.ViewHolder>() {
+
+    @Inject
+    lateinit var imageLoader : IImageLoader<ImageView>
 
     inner class ViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView),
         LayoutContainer, UserItemView {

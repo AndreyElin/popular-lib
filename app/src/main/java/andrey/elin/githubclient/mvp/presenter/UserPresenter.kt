@@ -18,8 +18,6 @@ class UserPresenter (val user: GithubUser ) : MvpPresenter<UserView>() {
     @Inject
     lateinit var mainThreadScheduler: Scheduler
     @Inject
-    lateinit var database: Database
-    @Inject
     lateinit var router: Router
     @Inject
     lateinit var repositoriesRepo: IGithubRepositoriesRepo
@@ -61,7 +59,12 @@ class UserPresenter (val user: GithubUser ) : MvpPresenter<UserView>() {
     }
 
     fun backPressed(): Boolean {
-        router.navigateTo(Screens.UsersScreen())
+        router.exit()
         return true
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewState.release()
     }
 }

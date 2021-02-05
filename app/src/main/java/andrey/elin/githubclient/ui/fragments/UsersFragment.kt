@@ -2,6 +2,7 @@ package andrey.elin.githubclient.ui.fragments
 
 import andrey.elin.githubclient.App
 import andrey.elin.githubclient.R
+import andrey.elin.githubclient.di.user.UserSubComponent
 import andrey.elin.githubclient.mvp.presenter.UsersPresenter
 import andrey.elin.githubclient.mvp.view.UsersView
 import andrey.elin.githubclient.ui.BackButtonListener
@@ -19,14 +20,17 @@ import moxy.ktx.moxyPresenter
 
 class UsersFragment : MvpAppCompatFragment(), UsersView, BackButtonListener {
 
-
     companion object {
         fun newInstance() = UsersFragment()
     }
 
+    private var userSubComponent: UserSubComponent? = null
+
     val presenter: UsersPresenter by moxyPresenter {
+        userSubComponent = App.instance.initUserSubComponent()
+
         UsersPresenter(AndroidSchedulers.mainThread()).apply {
-            App.instance.appComponent.inject(this)
+            userSubComponent?.inject(this)
         }
     }
 
@@ -41,12 +45,21 @@ class UsersFragment : MvpAppCompatFragment(), UsersView, BackButtonListener {
 
     override fun init() {
         rv_users.layoutManager = LinearLayoutManager(context)
-        adapter = UsersRVAdapter(presenter.usersListPresenter, GlideImageLoader())
+
+        adapter = UsersRVAdapter(presenter.usersListPresenter).apply {
+            userSubComponent?.inject(this)
+
+        }
         rv_users.adapter = adapter
     }
 
     override fun updateList() {
         adapter?.notifyDataSetChanged()
+    }
+
+    override fun release() {
+        userSubComponent = null
+        App.instance.releaseUserSubComponent()
     }
 
     override fun backPressed() = presenter.backPressed()

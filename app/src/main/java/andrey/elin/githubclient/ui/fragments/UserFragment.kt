@@ -2,6 +2,7 @@ package andrey.elin.githubclient.ui.fragments
 
 import andrey.elin.githubclient.App
 import andrey.elin.githubclient.R
+import andrey.elin.githubclient.di.repository.RepositorySubComponent
 import andrey.elin.githubclient.mvp.model.entity.GithubUser
 import andrey.elin.githubclient.mvp.presenter.UserPresenter
 import andrey.elin.githubclient.mvp.view.UserView
@@ -31,11 +32,15 @@ class UserFragment : MvpAppCompatFragment(), UserView, BackButtonListener {
 
     var adapter: ReposotoriesRVAdapter? = null
 
+    private var repositorySubComponent: RepositorySubComponent? = null
+
     val presenter: UserPresenter by moxyPresenter {
         val user = arguments?.getParcelable<GithubUser>(USER_ARG) as GithubUser
 
+        repositorySubComponent = App.instance.initRepositorySubComponent()
+
         UserPresenter(user).apply {
-            App.instance.appComponent.inject(this)
+            repositorySubComponent?.inject(this)
         }
     }
 
@@ -50,6 +55,11 @@ class UserFragment : MvpAppCompatFragment(), UserView, BackButtonListener {
 
     override fun updateList() {
         adapter?.notifyDataSetChanged()
+    }
+
+    override fun release() {
+        repositorySubComponent = null
+        App.instance.releaseRepositorySubComponent()
     }
 
     override fun backPressed() = presenter.backPressed()

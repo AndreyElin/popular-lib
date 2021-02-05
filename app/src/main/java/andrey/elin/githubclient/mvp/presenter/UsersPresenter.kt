@@ -64,4 +64,9 @@ class UsersPresenter(
         router.exit()
         return true
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewState.release()
+    }
 }
