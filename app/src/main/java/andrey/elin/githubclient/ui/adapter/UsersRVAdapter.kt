@@ -1,6 +1,7 @@
 package andrey.elin.githubclient.ui.adapter
 
 import andrey.elin.githubclient.R
+import andrey.elin.githubclient.mvp.model.image.IImageLoader
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,8 +10,9 @@ import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_user.view.*
 import andrey.elin.githubclient.mvp.presenter.list.IUserListPresenter
 import andrey.elin.githubclient.mvp.view.list.UserItemView
+import android.widget.ImageView
 
-class UsersRVAdapter(val presenter : IUserListPresenter) : RecyclerView.Adapter<UsersRVAdapter.ViewHolder>() {
+class UsersRVAdapter(val presenter : IUserListPresenter, val imageLoader : IImageLoader<ImageView>) : RecyclerView.Adapter<UsersRVAdapter.ViewHolder>() {
 
     inner class ViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView),
         LayoutContainer, UserItemView {
@@ -18,6 +20,10 @@ class UsersRVAdapter(val presenter : IUserListPresenter) : RecyclerView.Adapter<
 
         override fun setLogin(text: String) = with(containerView) {
             tv_login.text = text
+        }
+
+        override fun loadAvatar(url: String) = with(containerView) {
+            imageLoader.loadInto(url, iv_avatar)
         }
     }
 
