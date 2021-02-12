@@ -13,7 +13,7 @@ class RoomGithubRepositoriesCache(val db: Database) : IGithubRepositoriesCache {
 
     override fun getUserRepos(user: GithubUser) = Single.fromCallable {
         val roomUser =
-            db.userDao.findByLogin(user.login) ?: throw RuntimeException("No such user in cache")
+            db.userDao.findByLogin(user.login)
         return@fromCallable db.repositoryDao.findForUser(roomUser.id)
             .map { GithubRepository(it.id, it.name, it.forksCount) }
 
@@ -22,7 +22,6 @@ class RoomGithubRepositoriesCache(val db: Database) : IGithubRepositoriesCache {
     override fun putUserRepos(user: GithubUser, repositories: List<GithubRepository>) =
         Completable.fromAction {
             val roomUser = db.userDao.findByLogin(user.login)
-                ?: throw RuntimeException("No such user in cache")
             val roomRepos = repositories.map {
                 RoomGithubRepository(it.id, it.name ?: "", it.forksCount ?: 0, roomUser.id)
             }

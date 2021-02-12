@@ -21,6 +21,6 @@ open class UserModule {
 
     @UserScope
     @Provides
-    open fun usersRepo(api: IDataSource, networkStatus: INetworkStatus, cache: IGithubUsersCache) : IGithubUsersRepo =
+    fun usersRepo(api: IDataSource, networkStatus: INetworkStatus, cache: IGithubUsersCache) : IGithubUsersRepo =
         RetrofitGithubUsersRepo(api, networkStatus, cache)
 }

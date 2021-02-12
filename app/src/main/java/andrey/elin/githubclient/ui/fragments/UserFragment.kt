@@ -7,11 +7,13 @@ import andrey.elin.githubclient.mvp.model.entity.GithubUser
 import andrey.elin.githubclient.mvp.presenter.UserPresenter
 import andrey.elin.githubclient.mvp.view.UserView
 import andrey.elin.githubclient.ui.BackButtonListener
+import andrey.elin.githubclient.ui.MainActivity
 import andrey.elin.githubclient.ui.adapter.ReposotoriesRVAdapter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_user.*
 import moxy.MvpAppCompatFragment
@@ -44,8 +46,14 @@ class UserFragment : MvpAppCompatFragment(), UserView, BackButtonListener {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =
-        View.inflate(context, R.layout.fragment_user, null)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ) = View.inflate(context, R.layout.fragment_user, null)
+
+
+
 
     override fun init() {
         rv_repositories.layoutManager = LinearLayoutManager(context)

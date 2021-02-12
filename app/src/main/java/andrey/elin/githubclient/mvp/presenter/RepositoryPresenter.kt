@@ -14,7 +14,7 @@ class RepositoryPresenter(val githubRepository: GithubRepository) : MvpPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.init()
-        viewState.setId(githubRepository.id ?: "")
+        viewState.setId(githubRepository.id)
         viewState.setTitle(githubRepository.name ?: "")
         viewState.setForksCount((githubRepository.forksCount ?: 0).toString())
     }

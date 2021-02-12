@@ -29,6 +29,7 @@ class MainActivity : MvpAppCompatActivity(), MainView {
         setContentView(R.layout.activity_main)
 
         App.instance.appComponent.inject(this)
+
     }
 
     override fun onResumeFragments() {

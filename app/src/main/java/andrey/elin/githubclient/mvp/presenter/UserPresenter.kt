@@ -18,9 +18,9 @@ class UserPresenter (val user: GithubUser ) : MvpPresenter<UserView>() {
     @Inject
     lateinit var mainThreadScheduler: Scheduler
     @Inject
-    lateinit var router: Router
-    @Inject
     lateinit var repositoriesRepo: IGithubRepositoriesRepo
+    @Inject
+    lateinit var router: Router
 
     class RepositoriesListPresenter : IRepositoryListPresenter {
         val repositories = mutableListOf<GithubRepository>()

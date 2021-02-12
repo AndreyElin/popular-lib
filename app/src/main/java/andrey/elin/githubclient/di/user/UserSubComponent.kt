@@ -4,10 +4,10 @@ import andrey.elin.githubclient.di.repository.RepositorySubComponent
 import andrey.elin.githubclient.di.user.module.UserModule
 import andrey.elin.githubclient.mvp.presenter.UsersPresenter
 import andrey.elin.githubclient.ui.adapter.UsersRVAdapter
-import dagger.Component
+import dagger.Subcomponent
 
 @UserScope
-@Component(
+@Subcomponent(
     modules = [
         UserModule::class
 
